@@ -61,7 +61,16 @@ create_user() {
   done
 
   # Generate random password (using command substitution)
-  password=$( (</dev/urandom tr -dc A-Za-z0-9!@#$%^&*() | head -c16) )
+ # password=$( (</dev/urandom tr -dc A-Za-z0-9!@#$%^&*() | head -c16) )
+
+                      
+    password=$(<<EOF
+    </dev/urandom
+    tr -dc A-Za-z0-9!@#$%^&*()
+    head -c16
+    EOF
+    )
+
   echo "$username:$password" >> "$password_file"
   chmod 600 "$password_file" &>> "$log_file"
 
