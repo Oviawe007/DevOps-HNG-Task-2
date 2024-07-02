@@ -100,4 +100,8 @@ log_message() {
 echo "</span>(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$log_file"
 }
 
-# Check if user list
+# Check if user list file exists
+if [ ! -f "$user_file" ]; then
+  echo "User list file '$user_file' not found. Please check the path." >&2
+  exit 1
+fi
