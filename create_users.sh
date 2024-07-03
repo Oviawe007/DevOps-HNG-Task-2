@@ -38,8 +38,8 @@ fi
 
 # Define file paths in uppercase
 USER_FILE="$1"  # Assigns the first argument (user list file path) to USER_FILE variable
-LOG_FILE="/var/log/USER_MANAGEMENT.LOG"
-PASSWORD_FILE="/var/secure/USER_PASSWORDS.TXT"
+LOG_FILE="/var/log/user_management.log"
+PASSWORD_FILE="/var/secure/user_passwords.txt"
 
 # Check if user list file exists
 if [ ! -f "$USER_FILE" ]; then
@@ -51,7 +51,7 @@ fi
 # Create the log file if it doesn't exist
 if [ ! -f "$LOG_FILE" ]; then
     touch "$LOG_FILE"
-    chmod 0600 "$LOG_FILE"
+    chmod 600 "$LOG_FILE"
     log_message "Log file created: $LOG_FILE"
 fi
 
@@ -59,7 +59,7 @@ fi
 if [ ! -f "$PASSWORD_FILE" ]; then
     mkdir -p /var/secure
     touch "$PASSWORD_FILE"
-    chmod 0600 "$PASSWORD_FILE"
+    chmod 600 "$PASSWORD_FILE"
     log_message "Password file created: $PASSWORD_FILE"
 fi
 
@@ -92,7 +92,7 @@ create_user() {
 
   # Set home directory permissions
   chown -R "$username:$username" "/home/$username" &>> "$LOG_FILE"
-  chmod 700 "/home/$username" &>> "$LOG_FILE"
+  chmod 600 "/home/$username" &>> "$LOG_FILE"
 
   # Add user to additional groups (if any)
   for group in $(echo "$groups" | tr ',' ' '); do
@@ -237,6 +237,15 @@ while IFS=';' read -r username groups; do
     fi
 
 done < "$USER_FILE"
+
+if [ "$any_users_created" = true ]; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - User creation script completed successfully."
+elif [ "$all_users_exist" = true ]; then
+    echo "Users already exist. Nothing left to do"
+else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - No users were created successfully. Check log file."
+    log_message "No users were created successfully. Please check the input file format: username;group1,group2,group3."
+fi
 
 echo "User creation completed. Please refer to the log file for details: $LOG_FILE"
 
