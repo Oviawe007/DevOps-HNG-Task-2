@@ -1,5 +1,5 @@
-
 #!/bin/bash
+
 # Author : Efosa Oviawe
 # Description: This Bash script automates user creation, group management, and password generation for new employees based on a user list file
 # Date: 30/06/2024
@@ -17,10 +17,10 @@
 ###########################################################
 
 # Ensure script is run with root privileges
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script must be run as root or with sudo privileges" >&2
-    log "Script not run as root or with sudo privileges"
-    exit 1
+if [[ "$(id -u)" -ne 0 ]]; then
+  echo "This script must be run with root or sudo privileges." >&2
+  log "Script not run as root or with sudo privileges"
+  exit 1
 fi
 
 # Check if user list file path is provided as argument
@@ -33,7 +33,6 @@ fi
 USER_FILE="$1"  # Assigns the first argument (user list file path) to USER_FILE variable
 LOG_FILE="/var/log/USER_MANAGEMENT.LOG"
 PASSWORD_FILE="/var/secure/USER_PASSWORDS.TXT"
-
 
 # Check if user list file exists
 if [ ! -f "$USER_FILE" ]; then
