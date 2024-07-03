@@ -16,25 +16,27 @@
 
 ###########################################################
 
-
 # Ensure script is run with root privileges
 if [[ $EUID -ne 0 ]]; then
   echo "This script must be run with root privileges." >&2
   exit 1
 fi
 
-
-
-# Define file paths
-user_file="$1"  # Assigns the first argument (user list file path) to user_file variable
-log_file="/var/log/user_management.log"
-password_file="/var/secure/user_passwords.txt"
-
-
-
 # Check if user list file path is provided as argument
 if [ $# -ne 1 ]; then
-  echo "Usage: $0 <user_list_file>" >&2
+  echo "Usage: $0 <USER_LIST_FILE>" >&2
+  exit 1
+fi
+
+# Define file paths in uppercase
+USER_FILE="$1"  # Assigns the first argument (user list file path) to USER_FILE variable
+LOG_FILE="/var/log/USER_MANAGEMENT.LOG"
+PASSWORD_FILE="/var/secure/USER_PASSWORDS.TXT"
+
+
+# Check if user list file exists
+if [ ! -f "$USER_FILE" ]; then
+  echo "User list file '$USER_FILE' not found. Please check the path." >&2
   exit 1
 fi
 
@@ -52,21 +54,21 @@ create_user() {
   fi
 
   # Create user group
-  groupadd "$username" &>> "$log_file"
+  groupadd "$username" &>> "$LOG_FILE"
 
   # Create user with home directory
-  useradd -m -g "$username" "$username" &>> "$log_file"
+  useradd -m -g "$username" "$username" &>> "$LOG_FILE"
 
   # Set home directory permissions
-  chown -R "$username:$username" "/home/$username" &>> "$log_file"
-  chmod 700 "/home/$username" &>> "$log_file"
+  chown -R "$username:$username" "/home/$username" &>> "$LOG_FILE"
+  chmod 700 "/home/$username" &>> "$LOG_FILE"
 
   # Add user to additional groups (if any)
   for group in $(echo "$groups" | tr ',' ' '); do
     if ! grep -q "^$group:" /etc/group; then
-      groupadd "$group" &>> "$log_file"
+      groupadd "$group" &>> "$LOG_FILE"
     fi
-    usermod -a -G "$group" "$username" &>> "$log_file"
+    usermod -a -G "$group" "$username" &>> "$LOG_FILE"
   done
 
   # Generate random password (using here-document)
@@ -77,11 +79,11 @@ create_user() {
   EOF
   )
 
-  echo "$username:$password" >> "$password_file"
-  chmod 600 "$password_file" &>> "$log_file"
+  echo "$username:$password" >> "$PASSWORD_FILE"
+  chmod 600 "$PASSWORD_FILE" &>> "$LOG_FILE"
 
   # Set user password
-  echo "$password" | passwd --stdin "$username" &>> "$log_file"
+  echo "$password" | passwd --stdin "$username" &>> "$LOG_FILE"
 
   log_message "User $username created successfully."
 }
@@ -89,18 +91,16 @@ create_user() {
 # Function to log messages with timestamps
 log_message() {
   message="$1"
-  echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$log_file"
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$LOG_FILE"
 }
 
-# Check if user list file exists
-if [ ! -f "$user_file" ]; then
-  echo "User list file '$user_file' not found. Please check the path." >&2
-  exit 1
-fi
+
 
 # Loop through users in the list file
 while IFS= read -r username groups; do
   create_user "$username" "$groups"
-done < "$user_file"
+done < "$USER_FILE"
 
-echo "User creation completed. Please refer to the log file for details: $log_file"
+echo "User creation completed. Please refer to the log file for details: $LOG_FILE"
+
+
