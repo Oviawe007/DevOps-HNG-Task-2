@@ -40,6 +40,23 @@ if [ ! -f "$USER_FILE" ]; then
   exit 1
 fi
 
+
+# Create the log file if it doesn't exist
+if [ ! -f "$LOG_FILE" ]; then
+    touch "$LOG_FILE"
+    chmod 0600 "$LOG_FILE"
+    log "Log file created: $LOG_FILE"
+fi
+
+# Create the password file if it doesn't exist
+if [ ! -f "$PASSWORD_FILE" ]; then
+    mkdir -p /var/secure
+    touch "$PASSWORD_FILE"
+    chmod 0600 "$PASSWORD_FILE"
+    log "Password file created: $PASSWORD_FILE"
+fi
+
+
 # Function to generate random passwords
 generate_password() {
     local password_length=12
