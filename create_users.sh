@@ -72,12 +72,12 @@ create_user() {
   done
 
   # Generate random password (using here-document)
-  password=$(<<EOF
-  </dev/urandom
-  tr -dc A-Za-z0-9!@#$%^&*()
+ password=<span class="math-inline">\(<<EOF
+</dev/urandom
+tr \-dc A\-Za\-z0\-9\!@\#</span>%^&*()
   head -c16
-  EOF
-  )
+EOF
+)
 
   echo "$username:$password" >> "$PASSWORD_FILE"
   chmod 600 "$PASSWORD_FILE" &>> "$LOG_FILE"
