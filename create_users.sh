@@ -16,10 +16,17 @@
 
 ###########################################################
 
+
+# Function to log messages with timestamps
+log_message() {
+  message="$1"
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$LOG_FILE"
+}
+
 # Ensure script is run with root privileges
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "This script must be run with root or sudo privileges." >&2
-  log "Script not run as root or with sudo privileges"
+  log_message "Script not run as root or with sudo privileges"
   exit 1
 fi
 
@@ -45,7 +52,7 @@ fi
 if [ ! -f "$LOG_FILE" ]; then
     touch "$LOG_FILE"
     chmod 0600 "$LOG_FILE"
-    log "Log file created: $LOG_FILE"
+    log_message "Log file created: $LOG_FILE"
 fi
 
 # Create the password file if it doesn't exist
@@ -53,7 +60,7 @@ if [ ! -f "$PASSWORD_FILE" ]; then
     mkdir -p /var/secure
     touch "$PASSWORD_FILE"
     chmod 0600 "$PASSWORD_FILE"
-    log "Password file created: $PASSWORD_FILE"
+    log_message "Password file created: $PASSWORD_FILE"
 fi
 
 
@@ -98,7 +105,7 @@ create_user() {
 
   # Generate a random password
     password=$(generate_password)
-    log "Generated password for $username"
+    log_message "Generated password for $username"
 
   echo "$username:$password" >> "$PASSWORD_FILE"
   chmod 600 "$PASSWORD_FILE" &>> "$LOG_FILE"
@@ -109,11 +116,7 @@ create_user() {
   log_message "User $username created successfully."
 }
 
-# Function to log messages with timestamps
-log_message() {
-  message="$1"
-  echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$LOG_FILE"
-}
+
 
 # Loop through users in the list file
 while IFS= read -r username groups; do
