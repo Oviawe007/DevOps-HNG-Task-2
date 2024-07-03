@@ -40,6 +40,14 @@ if [ ! -f "$USER_FILE" ]; then
   exit 1
 fi
 
+# Function to generate random passwords
+generate_password() {
+    local password_length=12
+    tr -dc A-Za-z0-9 </dev/urandom | head -c $password_length
+}
+
+
+
 # Function to create user, group, set permissions, and log actions
 create_user() {
   username="$1"
@@ -71,13 +79,9 @@ create_user() {
     usermod -a -G "$group" "$username" &>> "$LOG_FILE"
   done
 
-  # Generate random password (using here-document)
-  password=$(<<EOF
-  </dev/urandom
-  tr -dc A-Za-z0-9!@#$%^&*()
-  head -c16
-  EOF
-  )
+  # Generate a random password
+    password=$(generate_password)
+    log "Generated password for $username"
 
   echo "$username:$password" >> "$PASSWORD_FILE"
   chmod 600 "$PASSWORD_FILE" &>> "$LOG_FILE"
