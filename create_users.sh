@@ -17,9 +17,10 @@
 ###########################################################
 
 # Ensure script is run with root privileges
-if [ $EUID -ne 0 ]; then
-  echo "This script must be run with root privileges." >&2
-  exit 1
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root or with sudo privileges" >&2
+    log "Script not run as root or with sudo privileges"
+    exit 1
 fi
 
 # Check if user list file path is provided as argument
