@@ -47,6 +47,13 @@ user_file="/path/to/user_list.txt"
 log_file="/var/log/user_management.log"
 password_file="/var/secure/user_passwords.txt"
 
+
+# Check if user list file exists
+if [ ! -f "$user_file" ]; then
+  echo "User list file '$user_file' not found. Please check the path." >&2
+  exit 1
+fi
+
 # Function to create user, group, set permissions, and log actions
 create_user() {
   username="$1"
@@ -100,8 +107,4 @@ log_message() {
 echo "</span>(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$log_file"
 }
 
-# Check if user list file exists
-if [ ! -f "$user_file" ]; then
-  echo "User list file '$user_file' not found. Please check the path." >&2
-  exit 1
-fi
+
