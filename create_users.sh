@@ -72,12 +72,12 @@ create_user() {
   done
 
   # Generate random password (using here-document)
- password=<span class="math-inline">\(<<EOF
-</dev/urandom
-tr \-dc A\-Za\-z0\-9\!@\#</span>%^&*()
+   password=$(<<EOF
+  </dev/urandom
+  tr -dc A-Za-z0-9!@#$%^&*()
   head -c16
-EOF
-)
+  EOF
+  )
 
   echo "$username:$password" >> "$PASSWORD_FILE"
   chmod 600 "$PASSWORD_FILE" &>> "$LOG_FILE"
@@ -100,3 +100,5 @@ while IFS= read -r username groups; do
 done < "$USER_FILE"
 
 echo "User creation completed. Please refer to the log file for details: $LOG_FILE"
+
+exit 0
