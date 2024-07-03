@@ -17,7 +17,7 @@
 ###########################################################
 
 # Ensure script is run with root privileges
-if [[ $EUID -ne 0 ]]; then
+if [ $EUID -ne 0 ]; then
   echo "This script must be run with root privileges." >&2
   exit 1
 fi
