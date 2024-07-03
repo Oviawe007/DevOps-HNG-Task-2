@@ -72,7 +72,7 @@ create_user() {
   done
 
   # Generate random password (using here-document)
-   password=$(<<EOF
+  password=$(<<EOF
   </dev/urandom
   tr -dc A-Za-z0-9!@#$%^&*()
   head -c16
