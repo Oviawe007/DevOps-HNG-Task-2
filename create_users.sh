@@ -95,13 +95,9 @@ log_message() {
   echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >> "$LOG_FILE"
 }
 
-
-
 # Loop through users in the list file
 while IFS= read -r username groups; do
   create_user "$username" "$groups"
 done < "$USER_FILE"
 
 echo "User creation completed. Please refer to the log file for details: $LOG_FILE"
-
-
