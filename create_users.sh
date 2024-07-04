@@ -6,16 +6,6 @@
 
 #############################################################
 
-########### HOW TO USE ###########################
-
-
-# 1. Create a text file (e.g., user_list.txt) containing user information in the format username;groups (one user per line).
-# 2. Make the script executable: chmod +x create_users.sh
-# 3. Run the script: sudo ./create_users.sh <user_list.txt>
-
-
-###########################################################
-
 
 # Function to log messages with timestamps
 log_message() {
@@ -36,8 +26,8 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-# Define file paths in uppercase
-USER_FILE="$1"  # Assigns the first argument (user list file path) to USER_FILE variable
+# Define file paths
+USER_FILE="$1" 
 LOG_FILE="/var/log/user_management.log"
 PASSWORD_FILE="/var/secure/user_passwords.txt"
 
